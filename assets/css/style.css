@@ -1,11 +1,11 @@
 .divTable {
   display: table;
-  width: 50%;
+  width: 25%;
   border: 1px solid #000;
 }
 .divTableRow {
   display: table-row;
-  height: 4em;
+  height: 3em;
 }
 .divTableHeading {
   background-color: #eee;
