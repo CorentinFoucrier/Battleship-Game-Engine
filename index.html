@@ -6,15 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Battleship Game Engine</title>
+    <link rel="stylesheet" href="assets/css/buttons.css" />
     <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 
 <body>
-    <div class="divTable">
-        <div class="divTableBody" id="divTableBody">
+    <section class="container">
+        <div class="coords" id="coords">
             <!-- JavaScript generated array -->
         </div>
-    </div>
+    </section>
+
+    <section class="controls">
+        <a id="start" class="button medium round green" onclick="startGame();">Start</a>
+        <a id="restart" class="button medium round orange d-none" onclick="location.reload();">Reload</a>
+    </section>
+
     <script src="assets/js/app.js"></script>
 </body>
 
