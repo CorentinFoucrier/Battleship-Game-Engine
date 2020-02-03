@@ -8,9 +8,13 @@ const boatsProperties = { // Determine total of boats and size for each one.
     "totalOfBoats": 3,
     "boatsSizes": [4, 3, 2]
 };
-let boatsPos = [];
+let boatsEntities = [];
+let allBoatsPos = [];
 let tempoBoatsPos = [];
-let boatsLeft = boatsProperties.totalOfBoats;
+let tableCells = [];
+let boatsLeftToBeGenerate = boatsProperties.totalOfBoats;
+let boatsLeftToWin = boatsProperties.totalOfBoats;
+let ships;
 /* VARIABLES */
 
 const createBoard = () => {
@@ -41,18 +45,22 @@ const createBoard = () => {
     /* X Posision display */
 
     /* Table display */
-    boardHMLT += `<div class="divTable">`;
-    boardHMLT += `    <div class="divTableBody">`;
+    boardHMLT += `<div class="divTable" id="table">\n`;
+    boardHMLT += `    <div class="divTableBody">\n`;
     for (let i = 0; i < totalSquares; i++) {
-        boardHMLT += `    <div class="divTableRow">\n`;
+        boardHMLT += `        <div class="divTableRow">\n`;
         for (let j = 0; j < totalSquares; j++) {
             boardHMLT += `            <div class="divTableCell" id="${i}x${j}"></div>\n`;
         }
-        boardHMLT += `    </div>\n`;
+        boardHMLT += `        </div>\n`;
     }
     boardHMLT += `    </div>\n`;
     boardHMLT += `</div>\n`;
     /* Table display */
+
+    /* Ship display */
+    boardHMLT += `<div class="ships" id="ships"></div>\n`;
+    /* Ship display */
 
     coords.innerHTML = boardHMLT; // Put the result in HTML
 }
@@ -63,17 +71,57 @@ const createBoard = () => {
  */
 const randomNb = max => Math.floor(Math.random() * Math.floor(max));
 
+/**
+ * Make the 1st letter to uppercase
+ * @param {String} str 
+ */
+const firstLetterUpperCase = str => str.charAt(0).toUpperCase() + str.slice(1);
+
+/**
+ * Return name of a boat depending on it's size
+ * @param {Number} boatLength
+ */
+const boatName = (boatLength) => {
+    switch (boatLength) {
+        case 4:
+            return "battleship";
+        case 3:
+            return "crusier";
+        case 2:
+            return "destroyer";
+    }
+}
+
+/**
+ * FIRST FUNCTION CALL TO START THE GAME
+ */
 const startGame = () => {
+    const debugTime0 = performance.now();
     startButton.classList.add("d-none");
     restartButton.classList.remove("d-none");
     createBoard();
-    const debugTime0 = performance.now();
     const tob = boatsProperties.totalOfBoats;
+    const table = document.getElementById("table");
+    tableCells = table.getElementsByClassName('divTableCell');
+    ships = document.getElementById("ships");
+
+    // Generate appropriate number of boats
     for (let i = 0; i < tob; i++) {
         generateBoat();
-        boatsLeft--;
+        boatsLeftToBeGenerate--;
     }
-    // console.log(boatsPos);
+
+    // Add envent click on each cells to shoot
+    for (let i = 0; i < tableCells.length; i++) {
+        const cell = tableCells[i];
+        cell.addEventListener("click", e => {
+            const [x, y] = e.target.id.split('x');
+            shoot(x, y);
+        });
+    }
+
+    // console.log(allBoatsPos);
+    // console.log(boatsEntities);
     const debugTime1 = performance.now();
     console.log("Call to startGame() took " + (debugTime1 - debugTime0) + " milliseconds.");
 }
@@ -99,7 +147,7 @@ const generateBoat = () => {
  */
 const verifCoords = (x, y) => {
     if (
-        boatsPos.indexOf(x + "x" + y) < 0
+        allBoatsPos.indexOf(x + "x" + y) < 0
         && x <= totalSquares - 1
         && x >= 0
         && y <= totalSquares - 1
@@ -111,18 +159,22 @@ const verifCoords = (x, y) => {
     }
 }
 
+/**
+ * This function is called after the 1st position of boat has been valided by verifCoords()
+ * @param {Number} x "x" axis
+ * @param {Number} y "y" axis
+ * @param {Number} axis Direction to extent the rest of the boat
+ */
 const buildBoat = (x, y, axis) => {
     // console.log("buildBoat");
-    let currentBoat = boatsProperties.totalOfBoats - boatsLeft;
-    let currentBoatSize = boatsProperties.boatsSizes[currentBoat];
+    const currentBoat = boatsProperties.totalOfBoats - boatsLeftToBeGenerate;
+    const currentBoatSize = boatsProperties.boatsSizes[currentBoat];
     let i = 1;
-    let x1 = x;
-    let y1 = y;
     while (i < currentBoatSize) {
-        (axis === 0) ? x1++ : y1++;
-        if (verifCoords(x1, y1)) {
+        (axis === 0) ? x++ : y++;
+        if (verifCoords(x, y)) {
             // console.log("buildBoat true");
-            tempoBoatsPos.push(x1 + "x" + y1);
+            tempoBoatsPos.push(x + "x" + y);
             i++;
             continue;
         } else {
@@ -131,12 +183,77 @@ const buildBoat = (x, y, axis) => {
         }
     }
     // console.log("after while");
+
+    /* If i is different of currentBoatSize while loop has break, loop break = boat is not valid */
     if (i !== currentBoatSize) {
         tempoBoatsPos = []; // Empty temporary positions array
         generateBoat();
     } else {
         // console.log(tempoBoatsPos);
-        boatsPos = tempoBoatsPos.concat(boatsPos);
+        allBoatsPos = tempoBoatsPos.concat(allBoatsPos);
+        const bn = boatName(tempoBoatsPos.length);
+        ships.insertAdjacentHTML("beforeend",
+            `<div class="${bn}">${firstLetterUpperCase(bn)}: <span id="${tempoBoatsPos.length}|${boatsLeftToBeGenerate}">${tempoBoatsPos.length} square(s) left</span></div>`
+        );
+        tempoBoatsPos.unshift(tempoBoatsPos.length + "|" + boatsLeftToBeGenerate);
+        boatsEntities.push(tempoBoatsPos);
         tempoBoatsPos = []; // Empty temporary positions array
     }
 }
+
+const shoot = (x, y) => {
+    for (let i = 0; i < boatsEntities.length; i++) {
+        const be = boatsEntities[i];
+        const index = be.indexOf(x + "x" + y);
+        const updateSquaresLeft = document.getElementById(be[0]);
+        if (index >= 0) {
+            be.splice(index, 1);
+            updateSquaresLeft.innerHTML = be.length - 1 + " square(s) left";
+            if (be.length - 1 === 0) {
+                updateSquaresLeft.innerHTML = "Sunk";
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'You have sunk one ' + updateSquaresLeft.parentElement.className + '!',
+                    showCancelButton: false,
+                    confirmButtonColor: '#0bc36b',
+                    showClass: {
+                        popup: 'animated fadeIn'
+                    },
+                    hideClass: {
+                        popup: 'animated fadeOut'
+                    }
+                });
+                boatsLeftToWin--;
+            }
+            if (boatsLeftToWin === 0) {
+                table.classList.add("end");
+                Swal.fire({
+                    title: 'Congrats!',
+                    text: "Last ship has been sinks!",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Play again',
+                    showClass: {
+                        popup: 'animated fadeIn'
+                    },
+                    hideClass: {
+                        popup: 'animated fadeOut'
+                    }
+                }).then((result) => {
+                    if (result.value) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+    }
+    if (allBoatsPos.indexOf(x + "x" + y) < 0) {
+        document.getElementById(x + "x" + y).classList.add('miss');
+    } else {
+        document.getElementById(x + "x" + y).classList.add('hit');
+    }
+    // console.log(boatsEntities);
+}
+
+startGame(); // debug
