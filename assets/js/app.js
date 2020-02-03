@@ -256,4 +256,4 @@ const shoot = (x, y) => {
     // console.log(boatsEntities);
 }
 
-startGame(); // debug
+// startGame(); // debug
