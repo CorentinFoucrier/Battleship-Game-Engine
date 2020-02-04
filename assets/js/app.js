@@ -4,18 +4,21 @@ const startButton = document.getElementById("start");
 const restartButton = document.getElementById("restart");
 const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 const boatsProperties = { // Determine total of boats and size for each one.
-    "totalOfBoats": 3,
-    "boatsSizes": [4, 3, 2]
+    "totalOfBoats": 4,
+    "boatsSizes": [5, 4, 3, 2]
 };
 let rows = 8;
 let columns = 8;
+let turns = 0;
+let missed = 0;
+let hits = 0;
 let boatsEntities = [];
 let allBoatsPos = [];
 let tempoBoatsPos = [];
 let tableCells = [];
 let boatsLeftToBeGenerate = boatsProperties.totalOfBoats;
 let boatsLeftToWin = boatsProperties.totalOfBoats;
-let ships;
+let gameInfos;
 /* VARIABLES */
 
 const createBoard = () => {
@@ -60,7 +63,11 @@ const createBoard = () => {
     /* Table display */
 
     /* Ship display */
-    boardHMLT += `<div class="ships" id="ships"></div>\n`;
+    boardHMLT += `<div class="gameInfos" id="gameInfos">\n`;
+    boardHMLT += `<p>Turns: <span id="turns">0</span></p>\n`;
+    boardHMLT += `<p>Hits: <span id="hits">0</span></p>\n`;
+    boardHMLT += `<p>Missed: <span id="missed">0</span></p>\n`;
+    boardHMLT += `</div>\n`;
     /* Ship display */
 
     coords.innerHTML = boardHMLT; // Put the result in HTML
@@ -84,6 +91,8 @@ const firstLetterUpperCase = str => str.charAt(0).toUpperCase() + str.slice(1);
  */
 const boatName = (boatLength) => {
     switch (boatLength) {
+        case 5:
+            return "carrier";
         case 4:
             return "battleship";
         case 3:
@@ -107,7 +116,7 @@ const startGame = () => {
     const tob = boatsProperties.totalOfBoats;
     const table = document.getElementById("table");
     tableCells = table.getElementsByClassName('divTableCell');
-    ships = document.getElementById("ships");
+    gameInfos = document.getElementById("gameInfos");
 
     // Generate appropriate number of boats
     for (let i = 0; i < tob; i++) {
@@ -195,8 +204,8 @@ const buildBoat = (x, y, axis) => {
     } else {
         // console.log(tempoBoatsPos);
         allBoatsPos = tempoBoatsPos.concat(allBoatsPos);
-        const bn = boatName(tempoBoatsPos.length);
-        ships.insertAdjacentHTML("beforeend",
+        const bn = boatName(currentBoatSize);
+        gameInfos.insertAdjacentHTML("beforeend",
             `<div class="${bn}">${firstLetterUpperCase(bn)}: <span id="${tempoBoatsPos.length}|${boatsLeftToBeGenerate}">${tempoBoatsPos.length} square(s) left</span></div>`
         );
         tempoBoatsPos.unshift(tempoBoatsPos.length + "|" + boatsLeftToBeGenerate);
@@ -206,6 +215,8 @@ const buildBoat = (x, y, axis) => {
 }
 
 const shoot = (x, y) => {
+    turns++;
+    document.getElementById('turns').innerHTML = turns;
     for (let i = 0; i < boatsEntities.length; i++) {
         const be = boatsEntities[i];
         const index = be.indexOf(x + "x" + y);
@@ -252,12 +263,17 @@ const shoot = (x, y) => {
             }
         }
     }
+
     if (allBoatsPos.indexOf(x + "x" + y) < 0) {
         document.getElementById(x + "x" + y).classList.add('miss');
+        missed++;
+        document.getElementById('missed').innerHTML = missed;
     } else {
         document.getElementById(x + "x" + y).classList.add('hit');
+        hits++;
+        document.getElementById('hits').innerHTML = hits;
     }
-    // console.log(boatsEntities);
+    console.log(boatsEntities);
 }
 
 // startGame(); // debug
