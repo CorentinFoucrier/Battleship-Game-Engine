@@ -49,7 +49,7 @@ BGE is responsible for maintaining game state.
 
 ### BGE
 
--   [ ] Caller can specify the number of rows and columns in the game board as a parameter to the `startGame()` function.
+-   [x] Caller can specify the number of rows and columns in the game board as a parameter to the `startGame()` function.
 -   [ ] Caller can invoke a `gameStats()` function that returns a Javascript object containing metrics for the current game. For example, number of turns played, current number of hits and misses, etc.
 -   [ ] Caller can specify the number of players (1 or 2) when calling `startGame()` which will generate one board for each player randomly populated with ships.
 

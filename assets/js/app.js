@@ -2,12 +2,13 @@
 const coords = document.getElementById("coords");
 const startButton = document.getElementById("start");
 const restartButton = document.getElementById("restart");
-const totalSquares = 8;
 const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 const boatsProperties = { // Determine total of boats and size for each one.
     "totalOfBoats": 3,
     "boatsSizes": [4, 3, 2]
 };
+let rows = 8;
+let columns = 8;
 let boatsEntities = [];
 let allBoatsPos = [];
 let tempoBoatsPos = [];
@@ -24,7 +25,7 @@ const createBoard = () => {
     boardHMLT += `<div class="y">\n`;
     boardHMLT += `    <div class="divTable">\n`;
     boardHMLT += `        <div class="divTableRow">\n`;
-    for (let i = 0; i < totalSquares; i++) {
+    for (let i = 0; i < columns; i++) {
         boardHMLT += `            <div class="divTableCell">${letters[i]}</div>\n`;
     }
     boardHMLT += `        </div>\n`;
@@ -35,7 +36,7 @@ const createBoard = () => {
     /* X Posision display */
     boardHMLT += `<div class="x">\n`;
     boardHMLT += `    <div class="divTable">\n`;
-    for (let i = 0; i < totalSquares; i++) {
+    for (let i = 0; i < rows; i++) {
         boardHMLT += `        <div class="divTableRow">\n`;
         boardHMLT += `            <div class="divTableCell">${i + 1}</div>\n`;
         boardHMLT += `        </div>\n`;
@@ -47,9 +48,9 @@ const createBoard = () => {
     /* Table display */
     boardHMLT += `<div class="divTable" id="table">\n`;
     boardHMLT += `    <div class="divTableBody">\n`;
-    for (let i = 0; i < totalSquares; i++) {
+    for (let i = 0; i < rows; i++) {
         boardHMLT += `        <div class="divTableRow">\n`;
-        for (let j = 0; j < totalSquares; j++) {
+        for (let j = 0; j < columns; j++) {
             boardHMLT += `            <div class="divTableCell" id="${i}x${j}"></div>\n`;
         }
         boardHMLT += `        </div>\n`;
@@ -99,6 +100,9 @@ const startGame = () => {
     const debugTime0 = performance.now();
     startButton.classList.add("d-none");
     restartButton.classList.remove("d-none");
+    document.getElementById('rowsAndColumns').classList.add('d-none');
+    rows = parseInt(document.getElementById('x').value);
+    columns = parseInt(document.getElementById('y').value);
     createBoard();
     const tob = boatsProperties.totalOfBoats;
     const table = document.getElementById("table");
@@ -120,15 +124,15 @@ const startGame = () => {
         });
     }
 
-    // console.log(allBoatsPos);
-    // console.log(boatsEntities);
+    console.log(allBoatsPos);
+    console.log(boatsEntities);
     const debugTime1 = performance.now();
     console.log("Call to startGame() took " + (debugTime1 - debugTime0) + " milliseconds.");
 }
 
 const generateBoat = () => {
-    let x = randomNb(8);
-    let y = randomNb(8);
+    let x = randomNb(rows);
+    let y = randomNb(columns);
     let axis = randomNb(2);
     if (verifCoords(x, y)) {
         // console.log("generateBoat true");
@@ -148,9 +152,9 @@ const generateBoat = () => {
 const verifCoords = (x, y) => {
     if (
         allBoatsPos.indexOf(x + "x" + y) < 0
-        && x <= totalSquares - 1
+        && x <= rows - 1
         && x >= 0
-        && y <= totalSquares - 1
+        && y <= columns - 1
         && y >= 0
     ) {
         return true;
