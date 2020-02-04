@@ -1,7 +1,9 @@
 /* VARIABLES */
+const debug = document.getElementById("debug");
 const coords = document.getElementById("coords");
 const startButton = document.getElementById("start");
 const restartButton = document.getElementById("restart");
+const rowsAndColumns = document.getElementById('rowsAndColumns');
 const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 const boatsProperties = { // Determine total of boats and size for each one.
     "totalOfBoats": 4,
@@ -107,9 +109,10 @@ const boatName = (boatLength) => {
  */
 const startGame = () => {
     const debugTime0 = performance.now();
+    debug.parentElement.classList.add("d-none");
     startButton.classList.add("d-none");
+    rowsAndColumns.classList.add('d-none');
     restartButton.classList.remove("d-none");
-    document.getElementById('rowsAndColumns').classList.add('d-none');
     rows = parseInt(document.getElementById('x').value);
     columns = parseInt(document.getElementById('y').value);
     createBoard();
@@ -131,6 +134,13 @@ const startGame = () => {
             const [x, y] = e.target.id.split('x');
             shoot(x, y);
         });
+    }
+
+    if (debug.checked === true) {
+        console.log('ok');
+        for (let i = 0; i < allBoatsPos.length; i++) {
+            document.getElementById(allBoatsPos[i]).classList.add('debug');
+        }
     }
 
     console.log(allBoatsPos);

@@ -56,6 +56,13 @@ p {
   color: #006400;
 }
 
+.divDebug {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 1em;
+}
+
 /* DIV TABLES */
 .divTable {
   display: table;
@@ -136,16 +143,18 @@ p {
   content: "O";
 }
 
-#table .hit {
+#table .hit,
+#table .hit:hover {
   background-color: #ff0000;
   color: #0f0f0f;
   font-weight: 900;
 }
 
-#table .hit:hover {
-  background-color: #ff0000;
-}
-
 #table .hit::after {
   content: "X";
+}
+
+#table .debug,
+#table .debug:hover {
+  background-color: rgba(202, 71, 71, 0.5);
 }
