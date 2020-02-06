@@ -57,7 +57,7 @@ BGE is responsible for maintaining game state.
 
 ### Text-based Presentation Layer
 
--   [ ] User can see the current game statics at any point by entering the phrase `stats` in place of target coordinates. (Note that this requires the `gameStats()` function in the BGE)
+-   [x] User can see the current game statics at any point by entering the phrase `stats` in place of target coordinates. (Note that this requires the `gameStats()` function in the BGE)
 -   [ ] User can specify a two player game is to be played, with each player alternating turns in the same terminal session (Note that this requires corresponding Bonus Features in the BGE)
 -   [ ] User can see the player number in prompts associated with the inputs in each turn.
 -   [ ] User can see both players boards at the end of each turn.

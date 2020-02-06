@@ -28,6 +28,12 @@ p {
   margin-top: 1em;
 }
 
+.rowsAndColumns {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.8em;
+}
+
 .end {
   pointer-events: none;
 }

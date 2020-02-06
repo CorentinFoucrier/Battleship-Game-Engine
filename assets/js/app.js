@@ -11,15 +11,15 @@ const boatsProperties = { // Determine total of boats and size for each one.
 };
 let rows = 8;
 let columns = 8;
+let hits = 0;
 let turns = 0;
 let missed = 0;
-let hits = 0;
 let boatsEntities = [];
-let allBoatsPos = [];
 let tempoBoatsPos = [];
+let allBoatsPos = [];
 let tableCells = [];
-let boatsLeftToBeGenerate = boatsProperties.totalOfBoats;
 let boatsLeftToWin = boatsProperties.totalOfBoats;
+let boatsLeftToBeGenerate = boatsProperties.totalOfBoats;
 let gameInfos;
 /* VARIABLES */
 
@@ -137,14 +137,13 @@ const startGame = () => {
     }
 
     if (debug.checked === true) {
-        console.log('ok');
         for (let i = 0; i < allBoatsPos.length; i++) {
             document.getElementById(allBoatsPos[i]).classList.add('debug');
         }
     }
 
-    console.log(allBoatsPos);
-    console.log(boatsEntities);
+    // console.log(allBoatsPos);
+    // console.log(boatsEntities);
     const debugTime1 = performance.now();
     console.log("Call to startGame() took " + (debugTime1 - debugTime0) + " milliseconds.");
 }
@@ -283,7 +282,7 @@ const shoot = (x, y) => {
         hits++;
         document.getElementById('hits').innerHTML = hits;
     }
-    console.log(boatsEntities);
+    // console.log(boatsEntities);
 }
 
 // startGame(); // debug
